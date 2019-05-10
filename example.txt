@@ -1,0 +1,48 @@
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Area;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+public class Main {
+
+    private static Shape contour(final BufferedImage i) {
+        final int w = i.getWidth();
+        final int h = i.getHeight();
+        final Area s = new Area(new Rectangle(w, h));
+        for (int y = 0; y < h; ++y) {
+            for (int x = 0; x < w; ++x) {
+                Color color = new Color(i.getRGB(x, y));
+                if (color.getRed() == 255 & color.getGreen() == 255 & color.getBlue() == 255) {
+                    Rectangle r = new Rectangle(x, y, 1, 1);
+                    s.subtract(new Area(r));
+                }
+            }
+        }
+        return s;
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Screenamte");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(200, 200);
+        frame.setUndecorated(true);
+//        Shape shape = new java.awt.geom.Arc2D.Double(0,0,500,500,0,90, Arc2D.PIE);
+
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File("D:\\123.bmp"));
+        } catch (IOException e) {
+        }
+
+        if (img == null) {
+            System.out.println("ERROR");
+        }
+
+        frame.setShape(contour(img));
+        frame.setVisible(true);
+    }
+}
